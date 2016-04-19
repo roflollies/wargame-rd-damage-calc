@@ -1,7 +1,9 @@
+#----------------------------------------------------------------------------
 # Written by: roflollies
 # Date started: 18/04/2016
 # Version Date: 
 # Description: Simple program that calculates damages in Wargame: Red Dragon
+#----------------------------------------------------------------------------
 
 import tkinter as tk
 from tkinter import ttk
