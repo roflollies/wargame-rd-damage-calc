@@ -60,49 +60,52 @@ class Heat_Calc(tk.Frame):
 		label.pack(pady=10, padx=10)
 
 		#calculate stuff here
-		def calculate_HEAT(heat,armour):
+		def calculate_HEAT(heat, armour):
+			heat_damage_entry.delete(0, last=len(heat_damage_entry.get())+1)
 			heat = int(heat)
 			armour = int(armour)
-			if armour >= heat:
-				damage = 1
-				damage = str(damage)
-				damage_entry.insert(0, damage)
-				return
-			elif armour == 1:
+			if armour == 1:
 				damage = heat
 				damage = str(damage)
-				damage_entry.insert(0, damage)
+				heat_damage_entry.insert(0, damage)
 				return
 			elif armour == 0:
 				damage = heat*2
 				damage = str(damage)
-				damage_entry.insert(0, damage)
+				heat_damage_entry.insert(0, damage)
 				return
-			elif (heat-10) >= armour:
-				damage = 6 + ((heat - 10) - armour)/2
+			elif (heat - armour) >= 10:
+				damage = 6 + ((heat - 10) - armour)
 				damage = str(damage)
-				damage_entry.insert(0, damage)
+				heat_damage_entry.insert(0, damage)
 				return
-
-		ap_label=tk.Label(self, text="Enter AP power")
-		ap_label.pack(pady=1, padx=10)
-
-		ap_entry=tk.Entry(self)
-		ap_entry.pack(pady=1, padx=10)
+			elif (heat - armour) <= 10 and (heat - armour) >= 1:
+				damage = ((heat-armour)/2) + 1
+				damage = str(damage)
+				heat_damage_entry.insert(0, damage)
+				return
+			else:
+				damage = 1
+				heat_damage_entry.insert(0, damage)
+				return
+			
+		heat_label=tk.Label(self, text="Enter AP power")
+		heat_label.pack(pady=1, padx=10)
+		heat_entry=tk.Entry(self)
+		heat_entry.pack(pady=1, padx=10)
 
 		armour_label=tk.Label(self, text="Enter target armour")
 		armour_label.pack(pady=1, padx=10)
-
 		armour_entry=tk.Entry(self)
 		armour_entry.pack(pady=1, padx=10)
 
-		damage_label=tk.Label(self, text="Damage")
-		damage_label.pack(pady=1, padx=10)
-		damage_entry=tk.Entry(self)
-		damage_entry.pack(pady=5)
+		heat_damage_label=tk.Label(self, text="Damage")
+		heat_damage_label.pack(pady=1, padx=10)
+		heat_damage_entry=tk.Entry(self)
+		heat_damage_entry.pack(pady=5)
 
 		calc_button = ttk.Button(self, text="Calculate!", 
-			command = lambda: calculate_HEAT(ap_entry.get(),armour_entry.get()))
+			command = lambda: calculate_HEAT(heat_entry.get(), armour_entry.get()))
 		calc_button.pack(pady=5)
 
 		KE_Button = ttk.Button(self, text="KE Damage Calculator",
@@ -121,14 +124,20 @@ class KE_Calc(tk.Frame):
 
 		#calculate stuff here
 		def calculate_KE_range(ap,gun_range,actual_range):
-			if gun_range < actual_range:
+			gun_range = int(gun_range)
+			actual_range = int(actual_range)
+			ap = int(ap)
+			if gun_range > actual_range:
 				difference = (actual_range - gun_range)/175
 				actual_ap = ap + difference
 				return actual_ap
+			elif actual_range > gun_range:
+				return 0
 			else:
 				return ap
 
 		def calculate_KE(ap,armour):
+			damage_entry.delete(0, last=len(damage_entry.get())+1)
 			ap = int(ap)
 			armour = int(armour)
 			if armour == 0:
@@ -136,26 +145,29 @@ class KE_Calc(tk.Frame):
 				damage = str(damage)
 				damage_entry.insert(0, damage)
 				return
-			damage = (ap-armour)/2 + 1
-			if damage <= 0:
-				damage = 'no'
-			damage = damage_entry.insert(0, damage)
-			return
+			elif ap < armour:
+				damage = 'inefficient'
+				damage = damage_entry.insert(0, damage)
+				return
+			else:
+				damage = (ap-armour)/2 + 1
+				damage = damage_entry.insert(0, damage)
+				return
 
 		ap_label=tk.Label(self, text="Enter AP power")
 		ap_label.pack(pady=1, padx=10)
 		ap_entry=tk.Entry(self)
 		ap_entry.pack(pady=1, padx=10)
 
-		gun_range_label=tk.Label(self, text="Enter weapon range")
-		gun_range_label.pack(pady=1, padx=10)
-		gun_range_entry=tk.Entry(self)
-		gun_range_entry.pack(pady=1, padx=10)
-
 		armour_label=tk.Label(self, text="Enter target armour")
 		armour_label.pack(pady=1, padx=10)
 		armour_entry=tk.Entry(self)
 		armour_entry.pack(pady=1, padx=10)
+
+		gun_range_label=tk.Label(self, text="Enter weapon range")
+		gun_range_label.pack(pady=1, padx=10)
+		gun_range_entry=tk.Entry(self)
+		gun_range_entry.pack(pady=1, padx=10)
 
 		range_label=tk.Label(self, text="Enter target range")
 		range_label.pack(pady=1, padx=10)
